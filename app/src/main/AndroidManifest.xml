@@ -3,6 +3,7 @@
     package="com.zinnie0e.coing">
 
     <uses-permission android:name="android.permission.INTERNET" />  <!-- 인터넷 권한 -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />  <!-- 오디오 사용 권한 -->
 
     <application
         android:allowBackup="true"
