@@ -13,11 +13,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -33,29 +36,22 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
     private String URL = "http://www.englishspeak.com/ko/english-phrases";
-    TextView txtConv1, txtConv2, txtConv3, txtConv4, txtConv5, txtVoice;
+    TextView txtVoice;
     Button btnVoice;
+    ListView listView;
 
     Intent intent;
     SpeechRecognizer mRecognizer;
     TextToSpeech tts;
     final int PERMISSION = 1;
 
+    ArrayList<ConvData> convDataList;
+    MyAdapter myAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        txtConv1 = (TextView) findViewById(R.id.txtConv1);
-        txtConv2 = (TextView) findViewById(R.id.txtConv2);
-        txtConv3 = (TextView) findViewById(R.id.txtConv3);
-        txtConv4 = (TextView) findViewById(R.id.txtConv4);
-        txtConv5 = (TextView) findViewById(R.id.txtConv5);
-        txtConv1.setOnClickListener(this);
-        txtConv2.setOnClickListener(this);
-        txtConv3.setOnClickListener(this);
-        txtConv4.setOnClickListener(this);
-        txtConv5.setOnClickListener(this);
 
         txtVoice = (TextView)findViewById(R.id.txtVoice);
         btnVoice = (Button) findViewById(R.id.btnVoice);
@@ -71,18 +67,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Random rand = new Random();
                 String[] conv = new String[5];
                 for(int i = 0 ; i < 5 ; i++) {
-                    conv[i] = elements.get(rand.nextInt(elements.size())).text();
-                    Log.i("!---", conv[i]);
+                    if(!elements.get(rand.nextInt(elements.size())).text().isEmpty()){
+                        conv[i] = elements.get(rand.nextInt(elements.size())).text();
+                        Log.i("!---", conv[i]);
+                    }
+
                 }
+                Elements elements2 = doc.select(".table tbody");
+                for (Element tr : elements2.select("tr")) {
+                    if(!tr.text().isEmpty()){
+                        Log.i("!----", tr.text());
+                    }
+                }
+                //한글 가져오기 진행중
                 bundle.putStringArray("conv", conv);
                 Message msg = handler.obtainMessage();
                 msg.setData(bundle);
                 handler.sendMessage(msg);
 
+
+
             }catch (IOException e){
                 e.printStackTrace();
             }
         }).start();
+
+        listView = (ListView)findViewById(R.id.listConv);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView parent, View v, int position, long id){
+                //Toast.makeText(getApplicationContext(), myAdapter.getItem(position).getConv_en(), Toast.LENGTH_LONG).show();
+                speakOut(myAdapter.getItem(position).getConv_en());
+            }
+        });
+
 
         // 퍼미션 체크
         if (Build.VERSION.SDK_INT >= 23){
@@ -111,23 +130,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRecognizer.setRecognitionListener(listener);
             mRecognizer.startListening(intent);
         }
-        switch (v.getId()){
+        /*switch (v.getId()){
             case R.id.txtConv1: case R.id.txtConv2: case R.id.txtConv3: case R.id.txtConv4: case R.id.txtConv5:
                 speakOut(((TextView)findViewById(v.getId())));
                 break;
-        }
+        }*/
     }
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             Bundle bundle = msg.getData();    //new Thread에서 작업한 결과물 받기
-            txtConv1.setText(bundle.getStringArray("conv")[0]);    //받아온 데이터 textView에 출력
-            txtConv2.setText(bundle.getStringArray("conv")[1]);    //받아온 데이터 textView에 출력
-            txtConv3.setText(bundle.getStringArray("conv")[2]);    //받아온 데이터 textView에 출력
-            txtConv4.setText(bundle.getStringArray("conv")[3]);    //받아온 데이터 textView에 출력
-            txtConv5.setText(bundle.getStringArray("conv")[4]);    //받아온 데이터 textView에 출력
 
+            convDataList = new ArrayList<ConvData>();
+            for(int i = 0; i < 5; i++){
+                convDataList.add(new ConvData(bundle.getStringArray("conv")[i], "(ko)" + bundle.getStringArray("conv")[i]));
+            }
+            myAdapter = new MyAdapter(getApplicationContext(), convDataList);
+            listView.setAdapter(myAdapter);
         }
     };
 
@@ -188,9 +208,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void speakOut(TextView conv) {
-        Log.i("!---", conv.getText().toString());
-        CharSequence text = conv.getText();
+    private void speakOut(String conv) {
+        Log.i("!---", conv);
+        CharSequence text = conv;
         tts.setPitch((float) 0.6);
         tts.setSpeechRate((float) 0.1);
         tts.speak(text,TextToSpeech.QUEUE_FLUSH,null,"id1");
@@ -218,6 +238,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("TTS", "Initilization Failed!");
         }
     }
-
-
 }
