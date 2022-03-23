@@ -1,6 +1,7 @@
 package com.zinnie0e.coing;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,20 +22,23 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
     private String URL = "http://www.englishspeak.com/ko/english-phrases";
     TextView txtConv1, txtConv2, txtConv3, txtConv4, txtConv5, txtVoice;
     Button btnVoice;
 
     Intent intent;
     SpeechRecognizer mRecognizer;
+    TextToSpeech tts;
     final int PERMISSION = 1;
 
     @Override
@@ -46,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         txtConv3 = (TextView) findViewById(R.id.txtConv3);
         txtConv4 = (TextView) findViewById(R.id.txtConv4);
         txtConv5 = (TextView) findViewById(R.id.txtConv5);
+        txtConv1.setOnClickListener(this);
+        txtConv2.setOnClickListener(this);
+        txtConv3.setOnClickListener(this);
+        txtConv4.setOnClickListener(this);
+        txtConv5.setOnClickListener(this);
 
         txtVoice = (TextView)findViewById(R.id.txtVoice);
         btnVoice = (Button) findViewById(R.id.btnVoice);
@@ -84,11 +94,28 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
 
         // 버튼을 클릭 이벤트 - 객체에 Context와 listener를 할당한 후 실행
-        btnVoice.setOnClickListener(v -> {
+        /*btnVoice.setOnClickListener(v -> {
             mRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
             mRecognizer.setRecognitionListener(listener);
             mRecognizer.startListening(intent);
-        });
+        });*/
+
+        tts = new TextToSpeech(this, this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == btnVoice){
+            //객체에 Context와 listener를 할당한 후 실행
+            mRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
+            mRecognizer.setRecognitionListener(listener);
+            mRecognizer.startListening(intent);
+        }
+        switch (v.getId()){
+            case R.id.txtConv1: case R.id.txtConv2: case R.id.txtConv3: case R.id.txtConv4: case R.id.txtConv5:
+                speakOut(((TextView)findViewById(v.getId())));
+                break;
+        }
     }
 
     Handler handler = new Handler() {
@@ -159,6 +186,38 @@ public class MainActivity extends AppCompatActivity {
         @Override public void onPartialResults(Bundle partialResults) {}
         @Override public void onEvent(int eventType, Bundle params) {}
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void speakOut(TextView conv) {
+        Log.i("!---", conv.getText().toString());
+        CharSequence text = conv.getText();
+        tts.setPitch((float) 0.6);
+        tts.setSpeechRate((float) 0.1);
+        tts.speak(text,TextToSpeech.QUEUE_FLUSH,null,"id1");
+    }
+
+    @Override public void onDestroy() {
+        if (tts != null) {
+            tts.stop(); tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.ENGLISH);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+//                btn_Speak.setEnabled(true);
+//                speakOut();
+            }
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
 
 
 }
