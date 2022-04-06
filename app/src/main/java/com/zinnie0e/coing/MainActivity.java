@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,20 +14,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import android.speech.RecognitionListener;
@@ -34,192 +42,136 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.zinnie0e.coing.fragment.AddringFragment;
+import com.zinnie0e.coing.fragment.HomeFragment;
+import com.zinnie0e.coing.fragment.NoteBookFragment;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
     private String URL = "http://www.englishspeak.com/ko/english-phrases";
     TextView txtVoice;
     Button btnVoice;
     ListView listView;
 
-    Intent intent;
-    SpeechRecognizer mRecognizer;
-    TextToSpeech tts;
+    private BottomNavigationView bottom_menu;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
+    private HomeFragment home_frag;
+    private NoteBookFragment notebook_frag;
+    private AddringFragment addring_frag;
+
+    public static Intent intent;
+    public static TextToSpeech tts;
     final int PERMISSION = 1;
 
-    ArrayList<ConvData> convDataList;
-    MyAdapter myAdapter;
+    static RequestQueue requestQueue;
+    JSONArray json_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        txtVoice = (TextView)findViewById(R.id.txtVoice);
-        btnVoice = (Button) findViewById(R.id.btnVoice);
+        findId();
+        initBottom();
+        initRecommend();
 
-        final Bundle bundle = new Bundle();
-
-        new Thread(() -> {
-            Document doc = null;
-            try{
-                doc = Jsoup.connect(URL).get();	//URL 웹사이트에 있는 html 코드를 다 끌어오기
-                Elements elements = doc.select(".test"); //원하는 태그만 찾아서 가져오기
-
-                Random rand = new Random();
-                String[] conv = new String[5];
-                for(int i = 0 ; i < 5 ; i++) {
-                    if(!elements.get(rand.nextInt(elements.size())).text().isEmpty()){
-                        conv[i] = elements.get(rand.nextInt(elements.size())).text();
-                        Log.i("!---", conv[i]);
-                    }
-
-                }
-                Elements elements2 = doc.select(".table tbody");
-                for (Element tr : elements2.select("tr")) {
-                    if(!tr.text().isEmpty()){
-                        Log.i("!----", tr.text());
-                    }
-                }
-                //한글 가져오기 진행중
-                bundle.putStringArray("conv", conv);
-                Message msg = handler.obtainMessage();
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-
-
-
-            }catch (IOException e){
-                e.printStackTrace();
-            }
-        }).start();
-
-        listView = (ListView)findViewById(R.id.listConv);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView parent, View v, int position, long id){
-                //Toast.makeText(getApplicationContext(), myAdapter.getItem(position).getConv_en(), Toast.LENGTH_LONG).show();
-                speakOut(myAdapter.getItem(position).getConv_en());
-            }
-        });
-
+        MediaUtil mediaUtil = new MediaUtil(this);
+        //btnVoice.setOnClickListener(mediaUtil);
 
         // 퍼미션 체크
         if (Build.VERSION.SDK_INT >= 23){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION);
         }
+
         // RecognizerIntent 객체 생성
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
 
-        // 버튼을 클릭 이벤트 - 객체에 Context와 listener를 할당한 후 실행
-        /*btnVoice.setOnClickListener(v -> {
-            mRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
-            mRecognizer.setRecognitionListener(listener);
-            mRecognizer.startListening(intent);
-        });*/
-
         tts = new TextToSpeech(this, this);
+
+        //db통신
+        //요청 큐가 없으면 요청 큐 생성하기
+        //나중에 여기다가 데이터 담으면 알아서!!!!!!! 통신함 ㅋ
+        if(requestQueue == null){
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
+        selData("dbtest");
+    }
+
+    private void findId() {
+        /*txtVoice = (TextView)findViewById(R.id.txtVoice);
+        btnVoice = (Button) findViewById(R.id.btnVoice);*/
+        listView = (ListView)findViewById(R.id.listConv);
+        bottom_menu = findViewById(R.id.bottom_menu);
     }
 
     @Override
     public void onClick(View v) {
-        if(v == btnVoice){
-            //객체에 Context와 listener를 할당한 후 실행
-            mRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
-            mRecognizer.setRecognitionListener(listener);
-            mRecognizer.startListening(intent);
-        }
-        /*switch (v.getId()){
-            case R.id.txtConv1: case R.id.txtConv2: case R.id.txtConv3: case R.id.txtConv4: case R.id.txtConv5:
-                speakOut(((TextView)findViewById(v.getId())));
-                break;
-        }*/
     }
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            Bundle bundle = msg.getData();    //new Thread에서 작업한 결과물 받기
-
-            convDataList = new ArrayList<ConvData>();
-            for(int i = 0; i < 5; i++){
-                convDataList.add(new ConvData(bundle.getStringArray("conv")[i], "(ko)" + bundle.getStringArray("conv")[i]));
+    private void initBottom() {
+        bottom_menu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.tab_home:
+                        setFragment(0);
+                        break;
+                    case R.id.tab_notebook:
+                        setFragment(1);
+                        break;
+                    case R.id.tab_addring:
+                        setFragment(2);
+                        break;
+                }
+                return true;
             }
-            myAdapter = new MyAdapter(getApplicationContext(), convDataList);
-            listView.setAdapter(myAdapter);
-        }
-    };
+        });
+        home_frag = new HomeFragment(this);
+        notebook_frag = new NoteBookFragment();
+        addring_frag = new AddringFragment();
+        setFragment(0); // 첫 프래그먼트 화면 지정
+    }
 
-    // RecognizerIntent 객체에 할당할 listener 생성
-    private RecognitionListener listener = new RecognitionListener() {
-        @Override public void onReadyForSpeech(Bundle params) {
-            Toast.makeText(getApplicationContext(),"음성인식을 시작합니다.",Toast.LENGTH_SHORT).show();
+    private void setFragment(int n) {
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        switch (n) {
+            case 0:
+                ft.replace(R.id.main_frame, home_frag);
+                ft.commit();
+                break;
+            case 1:
+                ft.replace(R.id.main_frame, notebook_frag);
+                ft.commit();
+                break;
+            case 2:
+                ft.replace(R.id.main_frame, addring_frag);
+                ft.commit();
+                break;
         }
-        @Override public void onBeginningOfSpeech() {}
-        @Override public void onRmsChanged(float rmsdB) {}
-        @Override public void onBufferReceived(byte[] buffer) {}
-        @Override public void onEndOfSpeech() {}
-        @Override public void onError(int error) {
-            String message;
-            switch (error) {
-                case SpeechRecognizer.ERROR_AUDIO:
-                    message = "오디오 에러";
-                    break;
-                case SpeechRecognizer.ERROR_CLIENT:
-                    message = "클라이언트 에러";
-                    break;
-                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                    message = "퍼미션 없음";
-                    break;
-                case SpeechRecognizer.ERROR_NETWORK:
-                    message = "네트워크 에러";
-                    break;
-                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                    message = "네트웍 타임아웃";
-                    break;
-                case SpeechRecognizer.ERROR_NO_MATCH:
-                    message = "찾을 수 없음";
-                    break;
-                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                    message = "RECOGNIZER가 바쁨";
-                    break;
-                case SpeechRecognizer.ERROR_SERVER:
-                    message = "서버가 이상함";
-                    break;
-                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                    message = "말하는 시간초과";
-                    break;
-                default:
-                    message = "알 수 없는 오류임";
-                    break;
-            }
-            Toast.makeText(getApplicationContext(), "에러가 발생하였습니다. : " + message,Toast.LENGTH_SHORT).show();
-        }
-        @Override public void onResults(Bundle results) {
-            // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
-            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            for(int i = 0; i < matches.size() ; i++){
-                txtVoice.setText(matches.get(i));
-            }
-        }
-        @Override public void onPartialResults(Bundle partialResults) {}
-        @Override public void onEvent(int eventType, Bundle params) {}
-    };
+    }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void speakOut(String conv) {
-        Log.i("!---", conv);
-        CharSequence text = conv;
-        tts.setPitch((float) 0.6);
-        tts.setSpeechRate((float) 0.1);
-        tts.speak(text,TextToSpeech.QUEUE_FLUSH,null,"id1");
+    private void initRecommend() {
+        long miliseconds = System.currentTimeMillis();
+        Date date = new Date(miliseconds);
+        Log.d("!---", miliseconds + "");
+
+        get_number("selMaxDate");
+
     }
 
     @Override public void onDestroy() {
-        if (tts != null) {
-            tts.stop(); tts.shutdown();
-        }
+        MediaUtil.stopSpeak();
         super.onDestroy();
     }
 
@@ -237,5 +189,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Log.e("TTS", "Initilization Failed!");
         }
+    }
+
+    public void get_number(String val) {
+        String URL = "http://14.37.4.189:1234/" + val + ".php";
+        //String URL = "http://10.0.2.2:80/" + val + ".php";
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, response -> {
+            try {
+                JSONArray jsonArray = new JSONArray(response);
+                long max_date_n = jsonArray.getJSONObject(0).getInt("max_date");
+                max_date_n *= 1000;
+                Log.i("!***//", max_date_n +"");
+
+
+                //long now_date = System.currentTimeMillis();
+                Date now_date = new Date(System.currentTimeMillis());
+                Date max_date = new Date(max_date_n);
+
+                Log.d("!---///", now_date.compareTo(max_date) + "");
+                Log.d("!---now_date/", now_date + "");
+                Log.d("!---max_date/", max_date + "");
+
+                long diffSec = (now_date.getTime() - max_date.getTime()) / 1000; //초 차이
+                long diffDays = diffSec / (24*60*60); //일자수 차이
+
+                Log.d("!---차이/", diffDays + "일 차이");
+
+
+//                for (int i = 0; i < jsonArray.length(); i++) {
+//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//
+//                    String number = jsonObject.getString("num");
+//                    // Log.d("get_number()", "몇 명? : " + number);
+//                    텍스트뷰.setText(number + "명");
+//                }
+            }
+            catch (JSONException e){
+                e.printStackTrace();
+            }
+        }, error -> Toast.makeText(this, "실패함. 인터넷 연결 확인", Toast.LENGTH_SHORT).show());
+
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void selData(String val) {
+        //php url 입력
+        String URL = "http://14.37.4.189:1234/" + val + ".php";
+        //String URL = "http://127.0.0.1:80/" + val + ".php";
+
+        StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //응답이 되었을때 response로 값이 들어옴
+                Log.i("!***", response);
+                //Toast.makeText(getApplicationContext(), "응답:" + response, Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //에러나면 error로 나옴
+                Log.e("!***", error.getMessage());
+                //Toast.makeText(getApplicationContext(), "에러:" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<String, String>();
+                //php로 설정값을 보낼 수 있음
+                return param;
+            }
+        };
+        request.setShouldCache(false);
+        requestQueue.add(request);
     }
 }
