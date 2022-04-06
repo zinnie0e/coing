@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">coing</string>
+
+    <!--sentence status-->
+    <string name="status_random">이번주의 새로운 문장 도착!</string>
+    <string name="status_ing">배우는 중</string>
+    <string name="status_new">새로운 문장</string>
+
+    <string name="status_icon_random">📮</string>
+    <string name="status_icon_ing">/</string>
+    <string name="status_icon_new">/</string>
 </resources>

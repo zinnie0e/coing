@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tab_home"
+        android:icon="@drawable/ic_home"
+        android:enabled="true"
+        android:title=""/>
+    <item
+        android:id="@+id/tab_notebook"
+        android:icon="@drawable/ic_notebook"
+        android:enabled="true"
+        android:checked="true"
+        android:title="" />
+    <item
+        android:id="@+id/tab_addring"
+        android:icon="@drawable/ic_addring"
+        android:enabled="true"
+        android:title="" />
+</menu>
