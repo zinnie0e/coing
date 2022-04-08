@@ -7,13 +7,13 @@
         android:title=""/>
     <item
         android:id="@+id/tab_notebook"
-        android:icon="@drawable/ic_notebook"
+        android:icon="@drawable/ic_storage"
         android:enabled="true"
         android:checked="true"
         android:title="" />
     <item
         android:id="@+id/tab_addring"
-        android:icon="@drawable/ic_addring"
+        android:icon="@drawable/ic_add"
         android:enabled="true"
         android:title="" />
 </menu>

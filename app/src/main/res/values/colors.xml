@@ -7,4 +7,33 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="claen">#00FF0000</color>
+
+    <!-- Grays -->
+    <color name="base_100">#202020</color>
+    <color name="base_70">#697384</color>
+    <color name="base_60">#9DA7B6</color>
+    <color name="base_50">#C4CDD9</color>
+    <color name="base_40">#DAE2EC</color>
+    <color name="base_30">#E6EBF1</color>
+    <color name="base_10">#F4F6FB</color>
+    <color name="base_0">#FFFFFF</color>
+
+    <!-- Service Colors -->
+    <color name="primary_100">#597AF0</color>
+    <color name="primary_30">#DBE3FF</color>
+
+    <!-- Semantic Colors -->
+    <color name="negative_100">#F06D6D</color>
+    <color name="negative_70">#F29090</color>
+    <color name="negative_30">#FCEBEB</color>
+    <color name="positive_100">#148819</color>
+    <color name="positive_30">#E5FBE6</color>
+
+    <!-- Contents Colors -->
+    <color name="new_100">#63D2F5</color>
+    <color name="learning_100">#9FFBAF</color>
+    <color name="done_100">#1D3676</color>
 </resources>
