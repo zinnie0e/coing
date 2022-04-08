@@ -32,6 +32,7 @@
             app:labelVisibilityMode="unlabeled"
             app:itemIconTint="@drawable/selector_menu_bottom"
             app:itemTextColor="@drawable/selector_menu_bottom"
+            android:background="@color/base_10"
             app:menu="@menu/menu_bottom">
         </com.google.android.material.bottomnavigation.BottomNavigationView>
     </LinearLayout>
