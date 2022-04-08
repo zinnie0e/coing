@@ -15,7 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.zinnie0e.coing.ConvData;
+import com.zinnie0e.coing.Data.ConvData;
 import com.zinnie0e.coing.MainActivity;
 import com.zinnie0e.coing.MediaUtil;
 import com.zinnie0e.coing.MyAdapter;
@@ -23,7 +23,6 @@ import com.zinnie0e.coing.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;

@@ -1,13 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/base_10"
     tools:context=".AddringFragment">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="add" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="41dp"
+            android:gravity="center"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textSize="16dp"
+            android:textColor="@color/base_100"
+            android:text="문장 저장" />
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="21dp"
+            android:padding="4.5dp"
+            android:background="@color/claen"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="64dp"
+            android:background="@drawable/layout_background_base_0"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edtEnglish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:ems="10"
+                android:fontFamily="@font/pretendard_semibold"
+                android:hint="영어 문장을 입력해주세요"
+                android:inputType="textMultiLine"
+                android:paddingLeft="13dp"
+                android:paddingTop="34dp"
+                android:paddingRight="13dp"
+                android:paddingBottom="12dp"
+                android:scrollHorizontally="false"
+                android:textSize="16dp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@color/base_30" />
+
+            <EditText
+                android:id="@+id/edtKorea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:ems="10"
+                android:fontFamily="@font/pretendard_regular"
+                android:hint="한글 문장을 입력해주세요"
+                android:inputType="textMultiLine"
+                android:paddingLeft="13dp"
+                android:paddingTop="34dp"
+                android:paddingRight="13dp"
+                android:paddingBottom="16dp"
+                android:scrollHorizontally="false"
+                android:textSize="16dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_background_base_0"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="단어장"
+                android:textSize="12dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:textColor="@color/base_60"/>
+
+            <ListView
+                android:id="@+id/listWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/claen"
+                android:dividerHeight="17dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnUpImg"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/layout_background_base_40"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="87dp"
+                android:text="@string/icon_camera" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/base_70"
+                android:fontFamily="@font/pretendard_semibold"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="16dp"
+                android:text="이미지로 문장 입력하기"
+                android:textSize="14dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:background="@drawable/layout_background_primary_100_8"
+        android:text="문장 저장하기"
+        android:textSize="14dp"
+        android:layout_marginTop="500dp"
+        android:textColor="@color/base_0"
+        android:fontFamily="@font/pretendard_semibold"/>
+
+
 </FrameLayout>

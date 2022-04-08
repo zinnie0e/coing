@@ -100,8 +100,8 @@ public class MediaUtil implements View.OnClickListener{
     public static void speakOut(String conv) {
         Log.i("!---", conv);
         CharSequence text = conv;
-        MainActivity.tts.setPitch((float) 0.6);
-        MainActivity.tts.setSpeechRate((float) 0.1);
+        MainActivity.tts.setPitch((float) 1.5);
+        MainActivity.tts.setSpeechRate((float) 1.0);
         MainActivity.tts.speak(text, TextToSpeech.QUEUE_FLUSH,null,"id1");
     }
 

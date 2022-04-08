@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E5E5E5"
+    android:background="@color/base_10"
     tools:context=".HomeFragment">
 
 
@@ -24,7 +24,7 @@
                 android:id="@+id/txtAllCount"
                 android:layout_width="wrap_content"
                 android:layout_height="31dp"
-                android:background="@drawable/backgroud_cnt"
+                android:background="@drawable/layout_background_primary_100"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="0개"
@@ -76,10 +76,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
+            android:layout_marginTop="12dp"
             android:ems="10"
             android:hint="검색"
             android:inputType="text"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:background="@null"/>
     </LinearLayout>
 
     <!--<ScrollView
