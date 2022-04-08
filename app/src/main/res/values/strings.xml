@@ -9,4 +9,10 @@
     <string name="status_icon_random">📮</string>
     <string name="status_icon_ing">/</string>
     <string name="status_icon_new">/</string>
+
+    <!--  -->
+    <string name="is_look_en">👀</string>
+    <string name="is_look_ko">🕶</string>
+    <string name="icon_camera">📷</string>
+
 </resources>

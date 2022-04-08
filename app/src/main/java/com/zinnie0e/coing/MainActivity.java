@@ -11,34 +11,22 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
@@ -55,14 +43,15 @@ import com.zinnie0e.coing.fragment.HomeFragment;
 import com.zinnie0e.coing.fragment.NoteBookFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
-    private String URL = "http://www.englishspeak.com/ko/english-phrases";
+    private String SERVER_URL = "http://14.37.4.189:1234/";
+    //private String SERVER_URL = "http://10.0.2.2:80/";
     TextView txtVoice;
     Button btnVoice;
     ListView listView;
 
     private BottomNavigationView bottom_menu;
-    private FragmentManager fm;
-    private FragmentTransaction ft;
+    FragmentManager fm;
+    FragmentTransaction ft;
     private HomeFragment home_frag;
     private NoteBookFragment notebook_frag;
     private AddringFragment addring_frag;
@@ -142,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setFragment(0); // 첫 프래그먼트 화면 지정
     }
 
-    private void setFragment(int n) {
+    public void setFragment(int n) {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
         switch (n) {
@@ -192,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void get_number(String val) {
-        String URL = "http://14.37.4.189:1234/" + val + ".php";
+        String URL = SERVER_URL + val + ".php";
         //String URL = "http://10.0.2.2:80/" + val + ".php";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, response -> {
             try {
@@ -235,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void selData(String val) {
         //php url 입력
-        String URL = "http://14.37.4.189:1234/" + val + ".php";
+        String URL = SERVER_URL + val + ".php";
         //String URL = "http://127.0.0.1:80/" + val + ".php";
 
         StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
