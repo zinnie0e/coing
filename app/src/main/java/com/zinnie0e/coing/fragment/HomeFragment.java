@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.zinnie0e.coing.Data.ConvData;
+import com.zinnie0e.coing.GetData;
 import com.zinnie0e.coing.MainActivity;
 import com.zinnie0e.coing.MediaUtil;
 import com.zinnie0e.coing.MyAdapter;
@@ -37,6 +38,7 @@ import java.util.Random;
 public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static String mJsonString;
     private String URL = "http://www.englishspeak.com/ko/english-phrases";
 
     TextView txtAllCount;
@@ -46,26 +48,14 @@ public class HomeFragment extends Fragment {
     MyAdapter myAdapter;
     ArrayList<ConvData> convDataList;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public HomeFragment(Context context) {
         mContext = context;
     }
+    public HomeFragment() {}
 
-    public HomeFragment() {
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance(String param1, String param2) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
@@ -82,18 +72,16 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        initCrawling();
         crawlingThread();
 
         listView = (ListView)view.findViewById(R.id.listConv);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id){
@@ -104,6 +92,15 @@ public class HomeFragment extends Fragment {
         txtAllCount = (TextView)view.findViewById(R.id.txtAllCount);
 
         return view;
+    }
+
+    private void initCrawling() {
+        Log.i("crawling//--", "start crawling");
+        GetData task = new GetData();
+        task.execute("http://14.37.4.189:1234//selMaxDate.php", "");
+
+        if(mJsonString != null)
+        Log.i("crawling//--", mJsonString);
     }
 
     private void crawlingThread() {

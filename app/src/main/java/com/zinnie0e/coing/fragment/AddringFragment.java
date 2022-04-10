@@ -2,6 +2,7 @@ package com.zinnie0e.coing.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,45 +35,29 @@ import java.util.ArrayList;
  */
 public class AddringFragment extends Fragment implements View.OnClickListener{
 
+    private static final int REQUEST_CODE = 0;
     LinearLayout btnUpImg, layWord;
     EditText edtEnglish, edtKorea;
     ImageButton btnClose;
     ListView listWord;
 
-    Context mContext;
     AdapterWord adapterWord;
     ArrayList<WordData> wordDataList;
 
     String language = "English";
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String present_result_ko;
     private ArrayList words_ko = new ArrayList();
 
-    public AddringFragment(Context context) {
-        mContext = context;
-    }
-
     public AddringFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddringFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AddringFragment newInstance(String param1, String param2) {
         AddringFragment fragment = new AddringFragment();
         Bundle args = new Bundle();
@@ -89,8 +74,6 @@ public class AddringFragment extends Fragment implements View.OnClickListener{
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
     @Override
@@ -104,35 +87,27 @@ public class AddringFragment extends Fragment implements View.OnClickListener{
         btnClose = (ImageButton) view.findViewById(R.id.btnClose);
         listWord = (ListView) view.findViewById(R.id.listWord);
 
-
-        btnUpImg.setOnClickListener(this::onClick);
+        btnUpImg.setOnClickListener(this);
         btnClose.setOnClickListener(this);
         layWord.setVisibility(view.GONE);
 
 
         edtEnglish.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String input = edtEnglish.getText().toString();
+                String input_text = edtEnglish.getText().toString();
                 if(edtEnglish.length() == 0){
                     layWord.setVisibility(view.GONE);
                     edtKorea.setText("");
                 }
                 else {
                     layWord.setVisibility(view.VISIBLE);
-
-                    String input_text = edtEnglish.getText().toString();
-
                     if(input_text.indexOf(" ") != -1) {
                         String[] words = input_text.split(" ");
                         wordThread(words, words_ko);
@@ -194,7 +169,6 @@ public class AddringFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
-
         return view;
     }
 
@@ -202,14 +176,7 @@ public class AddringFragment extends Fragment implements View.OnClickListener{
         String word = input_text;
         Papago papago = new Papago();
         String resultWord;
-                        /*if(language == "ko"){
-                            resultWord= papago.getTranslation(word,"ko","en");
-                        }else{
-                            resultWord= papago.getTranslation(word,"en","ko");
-                        }*/
-
         resultWord= papago.getTranslation(word,"en","ko");
-
         Bundle papagoBundle = new Bundle();
         papagoBundle.putString("resultWord",resultWord);
         Message msg;
@@ -231,7 +198,13 @@ public class AddringFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         if(v == btnUpImg){
-
+            /*// 갤러리에서 사진 가져오기 창을 띄운다.
+            Intent intent = new Intent();
+            intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            // 위의 Activity를 실행한 이후 이벤트를 정의
+            startActivityForResult(intent, REQUEST_CODE);*/
         }else if(v == btnClose){
             ((MainActivity) getActivity()).setFragment(0);
         }

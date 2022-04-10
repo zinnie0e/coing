@@ -43,7 +43,8 @@ import com.zinnie0e.coing.fragment.HomeFragment;
 import com.zinnie0e.coing.fragment.NoteBookFragment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
-    private String SERVER_URL = "http://14.37.4.189:1234/";
+    private static final String TAG = MainActivity.class.getSimpleName();
+    static String SERVER_URL = "http://14.37.4.189:1234/";
     //private String SERVER_URL = "http://10.0.2.2:80/";
     TextView txtVoice;
     Button btnVoice;
@@ -203,21 +204,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 long diffDays = diffSec / (24*60*60); //일자수 차이
 
                 Log.d("!---차이/", diffDays + "일 차이");
-
-
-//                for (int i = 0; i < jsonArray.length(); i++) {
-//                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-//
-//                    String number = jsonObject.getString("num");
-//                    // Log.d("get_number()", "몇 명? : " + number);
-//                    텍스트뷰.setText(number + "명");
-//                }
             }
             catch (JSONException e){
                 e.printStackTrace();
             }
         }, error -> Toast.makeText(this, "실패함. 인터넷 연결 확인", Toast.LENGTH_SHORT).show());
-
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         requestQueue.add(stringRequest);
     }
@@ -251,5 +242,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
         request.setShouldCache(false);
         requestQueue.add(request);
+    }
+
+    public void selDatabase(String val) {
+        String URL = SERVER_URL + val + ".php";
+
+        StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i(TAG, "!!!!!!!!!" + response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //에러나면 error로 나옴
+                Log.e(TAG, error.getMessage());
+                //Toast.makeText(getApplicationContext(), "에러:" + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> param = new HashMap<String, String>();
+                //php로 설정값을 보낼 수 있음
+                return param;
+            }
+        };
+        request.setShouldCache(false);
+        requestQueue.add(request);
+
     }
 }
