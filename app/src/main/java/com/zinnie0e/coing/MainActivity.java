@@ -21,31 +21,30 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.zinnie0e.coing.fragment.AddringFragment;
+import com.zinnie0e.coing.database.InsertDatabase;
+import com.zinnie0e.coing.database.SelectDatabase;
 import com.zinnie0e.coing.fragment.HomeFragment;
 import com.zinnie0e.coing.fragment.NoteBookFragment;
+import com.zinnie0e.coing.fragment.SaveFragment;
+import com.zinnie0e.coing.util.ActivityResultEvent;
+import com.zinnie0e.coing.util.EventBus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
     private static final String TAG = MainActivity.class.getSimpleName();
-    static String SERVER_URL = "http://14.37.4.189:1234/";
-    //private String SERVER_URL = "http://10.0.2.2:80/";
+
     TextView txtVoice;
     Button btnVoice;
     ListView listView;
@@ -55,14 +54,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FragmentTransaction ft;
     private HomeFragment home_frag;
     private NoteBookFragment notebook_frag;
-    private AddringFragment addring_frag;
+    private SaveFragment save_frag;
 
     public static Intent intent;
     public static TextToSpeech tts;
     final int PERMISSION = 1;
 
-    static RequestQueue requestQueue;
-    JSONArray json_data;
+    public static JSONArray json_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findId();
         initBottom();
-        initRecommend();
 
         MediaUtil mediaUtil = new MediaUtil(this);
         //btnVoice.setOnClickListener(mediaUtil);
@@ -87,14 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
 
         tts = new TextToSpeech(this, this);
-
-        //db통신
-        //요청 큐가 없으면 요청 큐 생성하기
-        //나중에 여기다가 데이터 담으면 알아서!!!!!!! 통신함 ㅋ
-        if(requestQueue == null){
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
-        selData("dbtest");
     }
 
     private void findId() {
@@ -119,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.tab_notebook:
                         setFragment(1);
                         break;
-                    case R.id.tab_addring:
+                    case R.id.tab_save:
                         setFragment(2);
                         break;
                 }
@@ -128,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         home_frag = new HomeFragment(this);
         notebook_frag = new NoteBookFragment();
-        addring_frag = new AddringFragment();
+        save_frag = new SaveFragment();
         setFragment(0); // 첫 프래그먼트 화면 지정
     }
 
@@ -145,20 +134,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ft.commit();
                 break;
             case 2:
-                ft.replace(R.id.main_frame, addring_frag);
+                ft.replace(R.id.main_frame, save_frag);
                 ft.commit();
                 break;
         }
     }
 
-    private void initRecommend() {
-        long miliseconds = System.currentTimeMillis();
-        Date date = new Date(miliseconds);
-        Log.d("!---", miliseconds + "");
 
-        get_number("selMaxDate");
-
-    }
 
     @Override public void onDestroy() {
         MediaUtil.stopSpeak();
@@ -181,95 +163,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void get_number(String val) {
-        String URL = SERVER_URL + val + ".php";
-        //String URL = "http://10.0.2.2:80/" + val + ".php";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, response -> {
-            try {
-                JSONArray jsonArray = new JSONArray(response);
-                long max_date_n = jsonArray.getJSONObject(0).getInt("max_date");
-                max_date_n *= 1000;
-                Log.i("!***//", max_date_n +"");
-
-
-                //long now_date = System.currentTimeMillis();
-                Date now_date = new Date(System.currentTimeMillis());
-                Date max_date = new Date(max_date_n);
-
-                Log.d("!---///", now_date.compareTo(max_date) + "");
-                Log.d("!---now_date/", now_date + "");
-                Log.d("!---max_date/", max_date + "");
-
-                long diffSec = (now_date.getTime() - max_date.getTime()) / 1000; //초 차이
-                long diffDays = diffSec / (24*60*60); //일자수 차이
-
-                Log.d("!---차이/", diffDays + "일 차이");
-            }
-            catch (JSONException e){
-                e.printStackTrace();
-            }
-        }, error -> Toast.makeText(this, "실패함. 인터넷 연결 확인", Toast.LENGTH_SHORT).show());
-        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        requestQueue.add(stringRequest);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        EventBus.getInstance().post(ActivityResultEvent.create(requestCode, resultCode, data));
     }
 
-    public void selData(String val) {
-        //php url 입력
-        String URL = SERVER_URL + val + ".php";
-        //String URL = "http://127.0.0.1:80/" + val + ".php";
-
-        StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //응답이 되었을때 response로 값이 들어옴
-                Log.i("!***", response);
-                //Toast.makeText(getApplicationContext(), "응답:" + response, Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //에러나면 error로 나옴
-                Log.e("!***", error.getMessage());
-                //Toast.makeText(getApplicationContext(), "에러:" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<String, String>();
-                //php로 설정값을 보낼 수 있음
-                return param;
-            }
-        };
-        request.setShouldCache(false);
-        requestQueue.add(request);
+    /*private void initRecommend() {
+        SelectDatabase s = new SelectDatabase(Define.DB_SEL_Maxdate);
+        s.execute();
     }
 
-    public void selDatabase(String val) {
-        String URL = SERVER_URL + val + ".php";
+    public static void setRecommend(long diffDays) {
+        if(diffDays >= 7){ //or 없거나
+            Log.i(TAG, "7일 이상 차이나니까, 또는 없으니까 새로 만들자");
+        }
+        else{
+            Log.i(TAG, "원래꺼 세개 불러오자");
+        }
+    }*/
 
-        StringRequest request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i(TAG, "!!!!!!!!!" + response);
+    public void insertReco(){
+        String sentence_en = "test";
+        String sentence_ko = "테스트";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        String date = simpleDateFormat.format(new Date());
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //에러나면 error로 나옴
-                Log.e(TAG, error.getMessage());
-                //Toast.makeText(getApplicationContext(), "에러:" + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> param = new HashMap<String, String>();
-                //php로 설정값을 보낼 수 있음
-                return param;
-            }
-        };
-        request.setShouldCache(false);
-        requestQueue.add(request);
+        HashMap<String, String> requestedParams = new HashMap<>();
+        requestedParams.put("sentence_en", sentence_en);
+        requestedParams.put("sentence_ko", sentence_ko);
+        requestedParams.put("date", date);
+        Log.d("HashMap", requestedParams.get("sentence_en"));
+        Toast.makeText(getApplicationContext(), "Success!!! Added sentence_en: " + requestedParams.get("sentence_en"), Toast.LENGTH_LONG).show();
 
+        InsertDatabase task = new InsertDatabase(Define.DB_IN_Recommend, requestedParams);
+        task.execute();
     }
 }
