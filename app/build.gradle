@@ -38,4 +38,6 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'org.json:json:20190722'
+    implementation 'com.rmtheis:tess-two:6.3.0'
+    implementation 'com.squareup:otto:+'
 }

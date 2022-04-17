@@ -12,7 +12,7 @@
         android:checked="true"
         android:title="" />
     <item
-        android:id="@+id/tab_addring"
+        android:id="@+id/tab_save"
         android:icon="@drawable/ic_add"
         android:enabled="true"
         android:title="" />

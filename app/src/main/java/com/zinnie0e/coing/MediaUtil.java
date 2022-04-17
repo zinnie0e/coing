@@ -1,11 +1,9 @@
 package com.zinnie0e.coing;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class MediaUtil implements View.OnClickListener{
     Context mContext;

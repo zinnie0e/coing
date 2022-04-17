@@ -1,4 +1,4 @@
-package com.zinnie0e.coing.Data;
+package com.zinnie0e.coing.data;
 
 public class ConvData {
     private String conv_en;

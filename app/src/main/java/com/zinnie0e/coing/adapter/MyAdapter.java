@@ -1,4 +1,4 @@
-package com.zinnie0e.coing;
+package com.zinnie0e.coing.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.zinnie0e.coing.Data.ConvData;
+import com.zinnie0e.coing.R;
+import com.zinnie0e.coing.data.ConvData;
 
 import java.util.ArrayList;
 

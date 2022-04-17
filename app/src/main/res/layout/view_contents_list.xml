@@ -10,7 +10,7 @@
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:paddingBottom="13dp"
-        android:background="@drawable/layout_background_base_0"
+        android:background="@drawable/layout_background_base_0_8"
         android:orientation="horizontal">
 
         <LinearLayout
