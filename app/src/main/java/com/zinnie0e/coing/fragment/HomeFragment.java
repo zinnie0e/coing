@@ -15,15 +15,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.zinnie0e.coing.Data.ConvData;
-import com.zinnie0e.coing.GetData;
-import com.zinnie0e.coing.MainActivity;
+import com.zinnie0e.coing.Define;
 import com.zinnie0e.coing.MediaUtil;
-import com.zinnie0e.coing.MyAdapter;
+import com.zinnie0e.coing.data.ConvData;
+import com.zinnie0e.coing.MainActivity;
+import com.zinnie0e.coing.adapter.MyAdapter;
 import com.zinnie0e.coing.R;
+import com.zinnie0e.coing.database.SelectDatabase;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -38,8 +40,8 @@ import java.util.Random;
 public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static String mJsonString;
-    private String URL = "http://www.englishspeak.com/ko/english-phrases";
+    private static final String TAG = HomeFragment.class.getSimpleName();
+    private String CRAWLING_URL = "http://www.englishspeak.com/ko/english-phrases";
 
     TextView txtAllCount;
     ListView listView;
@@ -78,7 +80,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        initCrawling();
+        initRecommend();
         crawlingThread();
 
         listView = (ListView)view.findViewById(R.id.listConv);
@@ -94,32 +96,47 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void initCrawling() {
-        Log.i("crawling//--", "start crawling");
-        GetData task = new GetData();
-        task.execute("http://14.37.4.189:1234//selMaxDate.php", "");
+    private void initRecommend() {
+        Log.i(TAG, "start initRecommend");
 
-        if(mJsonString != null)
-        Log.i("crawling//--", mJsonString);
+        SelectDatabase s = new SelectDatabase(Define.DB_SEL_Maxdate);
+        s.execute();
+    }
+
+    public static void setRecommend(long diffDays) {
+        if(diffDays >= 7){ //or 없거나
+            Log.i(TAG, "7일 이상 차이나니까, 또는 없으니까 새로 만들자");
+        }
+        else{
+            Log.i(TAG, "원래꺼 세개 불러오자");
+        }
     }
 
     private void crawlingThread() {
+        int cntCrawling = 3;
         final Bundle bundle = new Bundle();
         new Thread(() -> {
             Document doc = null;
             try{
-                doc = Jsoup.connect(URL).get();	//URL 웹사이트에 있는 html 코드를 다 끌어오기
+                doc = Jsoup.connect(CRAWLING_URL).get();	//URL 웹사이트에 있는 html 코드를 다 끌어오기
                 Elements elements = doc.select(".test"); //원하는 태그만 찾아서 가져오기
+                Elements contents = doc.select("table tbody tr td:eq(0)");
+                Log.i("***", contents.outerHtml());
+
 
                 Random rand = new Random();
-                String[] conv = new String[20];
-                for(int i = 0 ; i < 20 ; i++) {
-                    if(!elements.get(rand.nextInt(elements.size())).text().isEmpty()){
-                        conv[i] = elements.get(rand.nextInt(elements.size())).text();
-                        //Log.i("!---", conv[i]);
+                String[] conv = new String[cntCrawling];
+                for(int i = 0 ; i < cntCrawling ; i++) {
+                    int ran = rand.nextInt(elements.size());
+                    if(!elements.get(ran).text().isEmpty()){
+                        conv[i] = elements.get(ran).text();
+                        Log.i("!---", conv[i]);
+                        Log.i("!---!", contents.get(ran).attr(""));
+                        //Log.i("!---", contents.get(ran).text());
                     }
                 }
                 //한글 가져오기 진행중
+
                 bundle.putStringArray("conv", conv);
                 Message msg = handler.obtainMessage();
                 msg.setData(bundle);
