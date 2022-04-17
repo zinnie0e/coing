@@ -1,4 +1,4 @@
-package com.zinnie0e.coing;
+package com.zinnie0e.coing.util;
 
 import android.util.Log;
 
@@ -14,9 +14,11 @@ import java.net.URLEncoder;
 
 public class Papago {
     public String getTranslation(String word, String source, String target) {
+//        String clientId = "tYGvtfcEpM4gS9_NRDUW";
+//        String clientSecret = "4EP4qhYR7q";
 
-        String clientId = "tYGvtfcEpM4gS9_NRDUW";
-        String clientSecret = "4EP4qhYR7q";
+        String clientId = "";
+        String clientSecret = "";
 
         try {
             String wordSource, wordTarget;
