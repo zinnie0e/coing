@@ -55,7 +55,7 @@ public class MyAdapter extends BaseAdapter {
             @Override public void onClick(View v) {
                 if (isEnglish){
                     txtIsLook.setText(R.string.is_look_ko); //선글라스
-                    txtSentence.setText("한글로바꿔!!" + conv_data.get(position).getConv_en() + "(ko)");
+                    txtSentence.setText(conv_data.get(position).getConv_ko());
                 }
                 else {
                     txtIsLook.setText(R.string.is_look_en);

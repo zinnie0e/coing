@@ -19,9 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,13 +29,11 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.zinnie0e.coing.database.InsertDatabase;
-import com.zinnie0e.coing.database.SelectDatabase;
 import com.zinnie0e.coing.fragment.HomeFragment;
 import com.zinnie0e.coing.fragment.NoteBookFragment;
+import com.zinnie0e.coing.fragment.RecommendFragment;
 import com.zinnie0e.coing.fragment.SaveFragment;
 import com.zinnie0e.coing.util.ActivityResultEvent;
 import com.zinnie0e.coing.util.EventBus;
@@ -55,12 +51,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private HomeFragment home_frag;
     private NoteBookFragment notebook_frag;
     private SaveFragment save_frag;
+    private RecommendFragment recommend_frag;
 
     public static Intent intent;
     public static TextToSpeech tts;
     final int PERMISSION = 1;
 
     public static JSONArray json_data;
+
+    public static int main_frag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnVoice = (Button) findViewById(R.id.btnVoice);*/
         listView = (ListView)findViewById(R.id.listConv);
         bottom_menu = findViewById(R.id.bottom_menu);
+        main_frag = R.id.main_frame;
+
     }
 
     @Override
@@ -183,20 +184,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }*/
 
-    public void insertReco(){
-        String sentence_en = "test";
-        String sentence_ko = "테스트";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
-        String date = simpleDateFormat.format(new Date());
 
-        HashMap<String, String> requestedParams = new HashMap<>();
-        requestedParams.put("sentence_en", sentence_en);
-        requestedParams.put("sentence_ko", sentence_ko);
-        requestedParams.put("date", date);
-        Log.d("HashMap", requestedParams.get("sentence_en"));
-        Toast.makeText(getApplicationContext(), "Success!!! Added sentence_en: " + requestedParams.get("sentence_en"), Toast.LENGTH_LONG).show();
-
-        InsertDatabase task = new InsertDatabase(Define.DB_IN_Recommend, requestedParams);
-        task.execute();
-    }
 }

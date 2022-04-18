@@ -10,6 +10,7 @@ public class Define {
     private static final String BASE_PATH = "/";
 
     public static final String DB_SEL_Maxdate = BASE_PATH + "select/selMaxDate.php";
+    public static final String DB_SEL_Recommend = BASE_PATH + "select/selRecommend.php";
     public static final String DB_SEL_Test = BASE_PATH + "dbtest.php";
     public static final String DB_IN_Recommend = BASE_PATH + "insert/inRecommend.php";
 

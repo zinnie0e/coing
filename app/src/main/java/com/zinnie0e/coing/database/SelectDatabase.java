@@ -1,6 +1,8 @@
 package com.zinnie0e.coing.database;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
 import com.zinnie0e.coing.Define;
@@ -19,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class SelectDatabase extends AsyncTask<String, Void, String> {
@@ -43,8 +46,8 @@ public class SelectDatabase extends AsyncTask<String, Void, String> {
         if (result == null){
             Log.e(TAG, errorString);
         }else {
+            JSONArray jsonArray = null;
             if(filePath == Define.DB_SEL_Maxdate) {
-                JSONArray jsonArray = null;
                 try {
                     jsonArray = new JSONArray(result);
                     String max_date_s = jsonArray.getJSONObject(0).getString("max_date");
@@ -59,6 +62,25 @@ public class SelectDatabase extends AsyncTask<String, Void, String> {
                 } catch (JSONException | ParseException e) {
                     e.printStackTrace();
                 }
+            }else if(filePath == Define.DB_SEL_Recommend){
+                try {
+                    jsonArray = new JSONArray(result);
+                    String[] conv_en = new String[jsonArray.length()];
+                    String[] conv_ko = new String[jsonArray.length()];
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        conv_en[i] = jsonArray.getJSONObject(i).getString("sentence_en");
+                        conv_ko[i] = jsonArray.getJSONObject(i).getString("sentence_ko");
+                    }
+
+                    final Bundle bundle = new Bundle();
+                    bundle.putStringArray("conv_en", conv_en);
+                    bundle.putStringArray("conv_ko", conv_ko);
+                    Message msg = HomeFragment.handler.obtainMessage();
+                    msg.setData(bundle);
+                    HomeFragment.handler.sendMessage(msg);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -67,7 +89,6 @@ public class SelectDatabase extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String serverURL =  Define.PHP_URL + filePath;
         String postParameters = "";
-
         Log.i(TAG,  "serverURL" +  serverURL);
 
         try {
