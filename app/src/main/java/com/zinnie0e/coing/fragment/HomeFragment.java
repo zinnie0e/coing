@@ -1,5 +1,7 @@
 package com.zinnie0e.coing.fragment;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.zinnie0e.coing.Define;
 import com.zinnie0e.coing.MediaUtil;
@@ -87,8 +90,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        initRecommend();
-        //crawlingThread();
+        //initRecommend();
+        crawlingThread();
 
         listView = (ListView)view.findViewById(R.id.listConv);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -96,16 +99,18 @@ public class HomeFragment extends Fragment {
             public void onItemClick(AdapterView parent, View v, int position, long id){
                 //MediaUtil.speakOut(myAdapter.getItem(position).getConv_en());
 
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                RecommendFragment fragment1 = new RecommendFragment();
+                /*FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                RecommendFragment recommned_frag = new RecommendFragment();*/
 
                 Bundle bundle = new Bundle();
                 bundle.putString("conv_en", myAdapter.getItem(position).getConv_en());
                 bundle.putString("conv_ko", myAdapter.getItem(position).getConv_ko());
 
-                fragment1.setArguments(bundle);
-                ft.replace(MainActivity.main_frag, fragment1);
-                ft.commit();
+                /*recommned_frag.setArguments(bundle);
+                ft.replace(MainActivity.main_frag, recommned_frag);
+                ft.commit();*/
+
+                findNavController(HomeFragment.this).navigate(R.id.action_homeFragment_to_recommendFragment, bundle);
             }
         });
 
@@ -184,7 +189,7 @@ public class HomeFragment extends Fragment {
                 //insert DB
                 String strNowDate = (new SimpleDateFormat("yyyyMMdd")).format(new Date());
                 for(int i = 0; i < conv_en.length; i++){
-                    insertRecommend(strNowDate, conv_en[i], conv_ko[i]);
+                    //insertRecommend(strNowDate, conv_en[i], conv_ko[i]);
                 }
             }catch (IOException e){
                 e.printStackTrace();
@@ -201,6 +206,7 @@ public class HomeFragment extends Fragment {
             for(int i = 0; i < bundle.getStringArray("conv_en").length; i++){
                 convDataList.add(new ConvData(bundle.getStringArray("conv_en")[i], bundle.getStringArray("conv_ko")[i]));
             }
+            convDataList.add(new ConvData("Executing tasks app assembleDebug in project CUsersGURUDEV PJE tudio Projectscoing", "문서로부터 html  tag 를 모두 제거 하고 순수 문자열만 얻고자 할 때는 String text = doc.text(; 를 사용합니다"));
             txtAllCount.setText(convDataList.size()+"개");
             myAdapter = new MyAdapter((MainActivity) mContext, convDataList);
             listView.setAdapter(myAdapter);

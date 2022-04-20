@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/base_10"
-    tools:context=".HomeFragment">
+    tools:layout="@layout/fragment_home"
+    tools:context=".fragment.HomeFragment">
 
 
     <LinearLayout

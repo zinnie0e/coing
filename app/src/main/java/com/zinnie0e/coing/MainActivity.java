@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.Manifest;
 import android.content.Intent;
@@ -40,10 +43,13 @@ import com.zinnie0e.coing.util.EventBus;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TextToSpeech.OnInitListener{
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static MainActivity instance;
+    NavController navController;
 
     TextView txtVoice;
     Button btnVoice;
     ListView listView;
+    View main_host_frag;
 
     private BottomNavigationView bottom_menu;
     FragmentManager fm;
@@ -58,18 +64,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final int PERMISSION = 1;
 
     public static JSONArray json_data;
-
     public static int main_frag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        instance = this;
 
         findId();
         initBottom();
 
-        MediaUtil mediaUtil = new MediaUtil(this);
+        //MediaUtil mediaUtil = new MediaUtil(this);
         //btnVoice.setOnClickListener(mediaUtil);
 
         // 퍼미션 체크
@@ -85,13 +91,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tts = new TextToSpeech(this, this);
     }
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
     private void findId() {
         /*txtVoice = (TextView)findViewById(R.id.txtVoice);
         btnVoice = (Button) findViewById(R.id.btnVoice);*/
         listView = (ListView)findViewById(R.id.listConv);
         bottom_menu = findViewById(R.id.bottom_menu);
-        main_frag = R.id.main_frame;
-
+        main_frag = R.id.main_host_frame;
+        main_host_frag = findViewById(R.id.main_host_frame);
     }
 
     @Override
@@ -127,21 +137,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ft = fm.beginTransaction();
         switch (n) {
             case 0:
-                ft.replace(R.id.main_frame, home_frag);
+                ft.replace(R.id.main_host_frame, home_frag);
                 ft.commit();
                 break;
             case 1:
-                ft.replace(R.id.main_frame, notebook_frag);
+                ft.replace(R.id.main_host_frame, notebook_frag);
                 ft.commit();
                 break;
             case 2:
-                ft.replace(R.id.main_frame, save_frag);
+                ft.replace(R.id.main_host_frame, save_frag);
                 ft.commit();
                 break;
         }
     }
-
-
 
     @Override public void onDestroy() {
         MediaUtil.stopSpeak();
@@ -169,20 +177,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         EventBus.getInstance().post(ActivityResultEvent.create(requestCode, resultCode, data));
     }
-
-    /*private void initRecommend() {
-        SelectDatabase s = new SelectDatabase(Define.DB_SEL_Maxdate);
-        s.execute();
-    }
-
-    public static void setRecommend(long diffDays) {
-        if(diffDays >= 7){ //or 없거나
-            Log.i(TAG, "7일 이상 차이나니까, 또는 없으니까 새로 만들자");
-        }
-        else{
-            Log.i(TAG, "원래꺼 세개 불러오자");
-        }
-    }*/
-
-
 }
