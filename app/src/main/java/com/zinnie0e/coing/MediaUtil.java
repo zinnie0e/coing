@@ -1,9 +1,11 @@
 package com.zinnie0e.coing;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -11,35 +13,41 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+
+import com.zinnie0e.coing.fragment.RecommendFragment;
 
 import java.util.ArrayList;
 
 public class MediaUtil implements View.OnClickListener{
     Context mContext;
 
-    SpeechRecognizer mRecognizer;
-
-    public MediaUtil(Context context){
-        mContext = context;
-    }
+    static SpeechRecognizer mRecognizer;
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
-            /*case R.id.btnVoice:
+        /*switch(v.getId()){
+            case R.id.btn_stt:
+                Log.i("!!!resultresultresult!!!", "클릭함");
                 //객체에 Context와 listener를 할당한 후 실행
                 mRecognizer = SpeechRecognizer.createSpeechRecognizer((MainActivity) mContext);
                 mRecognizer.setRecognitionListener(listener);
                 mRecognizer.startListening(MainActivity.intent);
-                break;*/
-        }
+                break;
+        }*/
     }
 
     /** STT */
+    public static void speechOut() {
+        mRecognizer = SpeechRecognizer.createSpeechRecognizer(MainActivity.getInstance());
+        mRecognizer.setRecognitionListener(listener);
+        mRecognizer.startListening(MainActivity.intent);
+    }
+
     //RecognizerIntent 객체에 할당할 listener 생성
-    private RecognitionListener listener = new RecognitionListener() {
+    public static RecognitionListener listener = new RecognitionListener() {
         @Override public void onReadyForSpeech(Bundle params) {
-            Toast.makeText((MainActivity) mContext,"음성인식을 시작합니다.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.getInstance(),"음성인식을 시작합니다.",Toast.LENGTH_SHORT).show();
         }
         @Override public void onBeginningOfSpeech() {}
         @Override public void onRmsChanged(float rmsdB) {}
@@ -79,13 +87,13 @@ public class MediaUtil implements View.OnClickListener{
                     message = "알 수 없는 오류임";
                     break;
             }
-            Toast.makeText((MainActivity) mContext, "에러가 발생하였습니다. : " + message,Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.getInstance(), "에러가 발생하였습니다. : " + message,Toast.LENGTH_SHORT).show();
         }
         @Override public void onResults(Bundle results) {
             //말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
             ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             for(int i = 0; i < matches.size() ; i++){
-                ((MainActivity) mContext).txtVoice.setText(matches.get(i));
+                RecommendFragment.setSttResult(matches.get(i));
             }
         }
         @Override public void onPartialResults(Bundle partialResults) {}

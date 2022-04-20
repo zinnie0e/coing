@@ -523,6 +523,19 @@ public class SaveFragment extends Fragment implements View.OnClickListener{
                 wordDataList.add(new WordData(bundle.getStringArray("word")[i], "ko//"+bundle.getStringArray("word")[i]));
             }
             adapterWord = new AdapterWord(getContext(), wordDataList);
+
+            // 리스트뷰의 높이를 계산에서 layout 크기를 설정
+            int totalHeight = 0;
+            for (int i = 0; i < adapterWord.getCount(); i++){
+                View listItem = adapterWord.getView(i, null, lst_words);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+
+            ViewGroup.LayoutParams params = lst_words.getLayoutParams();
+            params.height = totalHeight + (lst_words.getDividerHeight() * (adapterWord.getCount() - 1));
+            lst_words.setLayoutParams(params);
+
             lst_words.setAdapter(adapterWord);
         }
     };

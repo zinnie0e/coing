@@ -12,6 +12,12 @@
     <string name="status_icon_ing">/</string>
     <string name="status_icon_new">/</string>
 
+    <string name="status_stt_off">발음 연습하기</string>
+    <string name="status_stt_on">발음 연습 종료</string>
+    <string name="txt_stt_result">문장을 발음해보세요\n잘못 발음하신 부분을 알려드릴게요</string>
+
+
+
     <!--  -->
     <string name="is_look_en">👀</string>
     <string name="is_look_ko">🕶</string>
