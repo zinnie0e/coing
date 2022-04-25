@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
-        android:paddingBottom="13dp"
         android:background="@drawable/layout_background_base_0_8"
         android:orientation="horizontal">
 
@@ -20,6 +20,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="12dp"
             android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:orientation="vertical">
 
             <TextView
@@ -31,17 +32,31 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/ly_status"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_marginTop="9dp"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/textView"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#202227"
-                    android:text="@string/status_icon_random" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/txt_icon"
+                        android:layout_width="16dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status_icon_random"
+                        android:textColor="@color/base_100"
+                        android:textSize="12dp" />
+
+                    <ImageView
+                        android:id="@+id/img_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_learning"/>
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/txtStatus"
@@ -49,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:textSize="12dp"
-                    android:textColor="#9DA7B6"
+                    android:textColor="@color/base_60"
                     android:text="@string/status_random"/>
             </LinearLayout>
         </LinearLayout>
