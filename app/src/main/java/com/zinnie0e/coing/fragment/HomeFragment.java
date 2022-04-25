@@ -3,14 +3,21 @@ package com.zinnie0e.coing.fragment;
 import static androidx.navigation.fragment.FragmentKt.findNavController;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.zinnie0e.coing.Define;
@@ -44,65 +52,75 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class HomeFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class HomeFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static String CRAWLING_URL = "http://www.englishspeak.com/ko/english-phrases?category_key=";
+    static Resources res;
 
-
-    static TextView txtAllCount;
-    static ListView listView;
+    View view;
+    static TextView txt_allCnt;
+    EditText edt_search;
+    static ListView lst_conv;
+    ImageButton btn_searchClose;
+    ImageView img_search;
 
     static Context mContext;
     static MyAdapter myAdapter;
     static ArrayList<ConvData> convDataList;
-
-    private String mParam1;
-    private String mParam2;
+    static ArrayList<ConvData> arraylist;
 
     private RecommendFragment recommend_frag = new RecommendFragment();
 
-    public HomeFragment(Context context) {
-        mContext = context;
-    }
     public HomeFragment() {}
-
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
+        mContext = getActivity();
+        res = mContext.getResources();
+
+        findID();
+        btn_searchClose.setVisibility(View.INVISIBLE);
 
         //initRecommend();
         crawlingThread();
 
-        listView = (ListView)view.findViewById(R.id.listConv);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        arraylist = new ArrayList<ConvData>();
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(edt_search.length() == 0){
+                    img_search.setVisibility(View.VISIBLE);
+                    btn_searchClose.setVisibility(View.INVISIBLE);
+                }else{
+                    img_search.setVisibility(View.GONE);
+                    btn_searchClose.setVisibility(View.VISIBLE);
+
+                    search(edt_search.getText().toString());
+                }
+
+            }
+        });
+
+        lst_conv.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id){
-                //MediaUtil.speakOut(myAdapter.getItem(position).getConv_en());
-
                 /*FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 RecommendFragment recommned_frag = new RecommendFragment();*/
 
                 Bundle bundle = new Bundle();
+                bundle.putInt("position", position);
                 bundle.putString("conv_en", myAdapter.getItem(position).getConv_en());
                 bundle.putString("conv_ko", myAdapter.getItem(position).getConv_ko());
 
@@ -111,12 +129,45 @@ public class HomeFragment extends Fragment {
                 ft.commit();*/
 
                 findNavController(HomeFragment.this).navigate(R.id.action_homeFragment_to_recommendFragment, bundle);
+                //Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_recommendFragment, bundle);
             }
         });
 
-        txtAllCount = (TextView)view.findViewById(R.id.txtAllCount);
-
         return view;
+    }
+
+
+
+    private void findID() {
+        txt_allCnt = (TextView)view.findViewById(R.id.txt_allCnt);
+        edt_search = (EditText) view.findViewById(R.id.edt_search);
+        lst_conv = (ListView)view.findViewById(R.id.lst_conv);
+        img_search = (ImageView)view.findViewById(R.id.img_search);
+        btn_searchClose = (ImageButton) view.findViewById(R.id.btn_searchClose);
+
+        btn_searchClose.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == btn_searchClose){
+            edt_search.setText(null);
+            search(edt_search.getText().toString());
+        }
+    }
+
+    private void search(String charText) {
+        convDataList.clear();
+        if (charText.length() == 0) {
+            convDataList.addAll(arraylist);
+        }else{
+            for(int i = 0;i < arraylist.size(); i++) {
+                if (arraylist.get(i).getConv_en().contains(charText)){
+                    convDataList.add(arraylist.get(i));
+                }
+            }
+        }
+        myAdapter.notifyDataSetChanged();
     }
 
     private void initRecommend() {
@@ -180,6 +231,7 @@ public class HomeFragment extends Fragment {
                     /*Log.i("!---", arr_en.get(ran));
                     Log.i("!---", arr_ko.get(ran));*/
                 }
+
                 bundle.putStringArray("conv_en", conv_en);
                 bundle.putStringArray("conv_ko", conv_ko);
                 Message msg = handler.obtainMessage();
@@ -201,15 +253,20 @@ public class HomeFragment extends Fragment {
         @Override
         public void handleMessage(@NonNull Message msg) {
             Bundle bundle = msg.getData();    //new Thread에서 작업한 결과물 받기
-
             convDataList = new ArrayList<ConvData>();
             for(int i = 0; i < bundle.getStringArray("conv_en").length; i++){
-                convDataList.add(new ConvData(bundle.getStringArray("conv_en")[i], bundle.getStringArray("conv_ko")[i]));
+                convDataList.add(new ConvData(bundle.getStringArray("conv_en")[i], bundle.getStringArray("conv_ko")[i], res.getString(R.string.status_random)));
             }
-            convDataList.add(new ConvData("Executing tasks app assembleDebug in project CUsersGURUDEV PJE tudio Projectscoing", "문서로부터 html  tag 를 모두 제거 하고 순수 문자열만 얻고자 할 때는 String text = doc.text(; 를 사용합니다"));
-            txtAllCount.setText(convDataList.size()+"개");
-            myAdapter = new MyAdapter((MainActivity) mContext, convDataList);
-            listView.setAdapter(myAdapter);
+            convDataList.add(new ConvData("Executing tasks app assembleDebug in project CUsersGURUDEV PJE tudio Projectscoing", "문서로부터 html  tag 를 모두 제거 하고 순수 문자열만 얻고자 할 때는 String text = doc.text(; 를 사용합니다", mContext.getResources().getString(R.string.status_new)));
+            convDataList.add(new ConvData("test1", "test", res.getString(R.string.status_done)));
+            convDataList.add(new ConvData("test2", "test", res.getString(R.string.status_learning)));
+            convDataList.add(new ConvData("test3", "test", res.getString(R.string.status_nothing)));
+            convDataList.add(new ConvData("test44444444444444444444444444444444444444444", "test", res.getString(R.string.status_nothing)));
+
+            txt_allCnt.setText(convDataList.size()+"개");
+            myAdapter = new MyAdapter(mContext, convDataList);
+            lst_conv.setAdapter(myAdapter);
+            arraylist.addAll(convDataList);
         }
     };
 }
