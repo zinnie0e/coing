@@ -2,10 +2,14 @@ package com.zinnie0e.coing.fragment;
 
 import static android.app.Activity.RESULT_OK;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -42,20 +46,14 @@ import androidx.fragment.app.Fragment;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.squareup.otto.Subscribe;
 import com.zinnie0e.coing.DialogImage;
-import com.zinnie0e.coing.adapter.MyAdapter;
-import com.zinnie0e.coing.data.ConvData;
+import com.zinnie0e.coing.MainActivity;
 import com.zinnie0e.coing.util.ActivityResultEvent;
 import com.zinnie0e.coing.adapter.AdapterWord;
 import com.zinnie0e.coing.data.WordData;
 import com.zinnie0e.coing.Define;
 import com.zinnie0e.coing.util.EventBus;
-import com.zinnie0e.coing.MainActivity;
 import com.zinnie0e.coing.util.Papago;
 import com.zinnie0e.coing.R;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,14 +63,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 public class SaveFragment extends Fragment implements View.OnClickListener{
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final String TAG = SaveFragment.class.getSimpleName();
-    private String mParam1;
-    private String mParam2;
+    static Context mContext;
+    Resources res;
 
     /** OCR */
     private TessBaseAPI mTess; //Tess API reference
@@ -103,22 +98,9 @@ public class SaveFragment extends Fragment implements View.OnClickListener{
         // Required empty public constructor
     }
 
-    public static SaveFragment newInstance(String param1, String param2) {
-        SaveFragment fragment = new SaveFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -136,11 +118,15 @@ public class SaveFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_save, container, false);
+        mContext = getActivity();
+        res = mContext.getResources();
 
         findId();
         ly_img.setVisibility(View.GONE);
         ly_words.setVisibility(View.GONE);
         ly_test.setVisibility(View.GONE);
+        ((MainActivity)mContext).fm_bottom77.setVisibility(View.VISIBLE);
+        ((MainActivity)mContext).fm_bottom54.setVisibility(View.GONE);
 
         //언어파일 경로
         datapath = getActivity().getFilesDir()+ "/tesseract/";
@@ -256,7 +242,12 @@ public class SaveFragment extends Fragment implements View.OnClickListener{
         if(v == btn_insertImg){
             openDialogImage();
         }else if(v == btn_prev){
-            ((MainActivity) getActivity()).setFragment(0);
+            ((MainActivity) mContext).bottom_menu.findViewById(R.id.tab_home).performClick();
+            //findNavController(this).navigate(R.id.action_to_homeFragment);
+            //((MainActivity) getActivity()).setFragment(0);
+
+            ((MainActivity)mContext).fm_bottom54.setVisibility(View.VISIBLE);
+            ((MainActivity)mContext).fm_bottom77.setVisibility(View.GONE);
         }else if(v == btn_pic1){
             // 사진 찍는 버튼 클릭시 카메라 킴
             sendTakePhotoIntent();

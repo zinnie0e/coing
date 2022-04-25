@@ -28,17 +28,19 @@
         android:name="com.zinnie0e.coing.fragment.SaveFragment"
         android:label="fragment_save"
         tools:layout="@layout/fragment_save" >
-        <action
-            android:id="@+id/action_saveFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
     </fragment>
+
+    <action
+        android:id="@+id/action_to_homeFragment"
+        app:destination="@id/homeFragment" />
+
     <fragment
-        android:id="@+id/noteBookFragment"
-        android:name="com.zinnie0e.coing.fragment.NoteBookFragment"
-        android:label="fragment_note_book"
-        tools:layout="@layout/fragment_note_book" >
+        android:id="@+id/storageFragment"
+        android:name="com.zinnie0e.coing.fragment.StorageFragment"
+        android:label="fragment_storage"
+        tools:layout="@layout/fragment_storage" >
         <action
-            android:id="@+id/action_noteBookFragment_to_homeFragment"
+            android:id="@+id/action_storageFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

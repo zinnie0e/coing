@@ -52,243 +52,282 @@
                     android:src="@drawable/ic_close" />
             </LinearLayout>
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="18dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/status_icon_random"
-                        android:textColor="@color/base_100" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:layout_weight="1"
-                        android:text="@string/status_random"
-                        android:textColor="@color/base_60"
-                        android:textSize="12dp" />
-
-                    <ImageButton
-                        android:id="@+id/btn_bookmark"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@color/claen"
-                        android:src="@drawable/ic_bookmark" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginRight="18dp"
-                    android:background="@drawable/layout_background_base_0_8"
-                    android:orientation="vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:paddingBottom="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="14dp"
-                        android:layout_marginTop="12dp"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:text="영어 문장"
-                        android:textColor="@color/base_60"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/txt_convEn"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:inputType="textMultiLine"
-                        android:scrollHorizontally="false"
-                        android:textColor="@color/base_100"
-                        android:textSize="16dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="12dp"
-                        android:background="@color/base_30"
-                        android:paddingBottom="12dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="14dp"
-                        android:layout_marginTop="12dp"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:text="한글 문장"
-                        android:textColor="@color/base_60"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/txt_convKo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="@font/pretendard_semibold"
-                        android:inputType="textMultiLine"
-                        android:scrollHorizontally="false"
-                        android:textColor="@color/base_100"
-                        android:textSize="16dp" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txt_sttResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginRight="18dp"
-                    android:background="@drawable/layout_background_base_0_8"
-                    android:fontFamily="@font/pretendard_regular"
-                    android:padding="12dp"
-                    android:text="@string/txt_stt_result"
-                    android:textColor="@color/base_50"
-                    android:textSize="16dp" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="49dp"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginRight="18dp"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/btn_tts"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="6dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/layout_background_base_0_border"
-                        android:gravity="center"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="18dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/status_icon_random"
+                            android:textColor="@color/base_100" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="2dp"
+                            android:layout_weight="1"
+                            android:text="@string/status_random"
+                            android:textColor="@color/base_60"
+                            android:textSize="12dp" />
+
+                        <ImageButton
+                            android:id="@+id/btn_bookmark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@color/claen"
+                            android:src="@drawable/ic_bookmark" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="18dp"
+                        android:background="@drawable/layout_background_base_0_8"
+                        android:orientation="vertical"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="14dp"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/pretendard_regular"
+                            android:text="영어 문장"
+                            android:textColor="@color/base_60"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/txt_convEn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/pretendard_semibold"
+                            android:inputType="textMultiLine"
+                            android:scrollHorizontally="false"
+                            android:textColor="@color/base_100"
+                            android:textSize="16dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@color/base_30"
+                            android:paddingBottom="12dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="14dp"
+                            android:layout_marginTop="12dp"
+                            android:fontFamily="@font/pretendard_regular"
+                            android:text="한글 문장"
+                            android:textColor="@color/base_60"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/txt_convKo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/pretendard_semibold"
+                            android:inputType="textMultiLine"
+                            android:scrollHorizontally="false"
+                            android:textColor="@color/base_100"
+                            android:textSize="16dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_sttResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="18dp"
+                        android:background="@drawable/layout_background_base_0_8"
+                        android:fontFamily="@font/pretendard_regular"
+                        android:padding="12dp"
+                        android:text="@string/txt_stt_result"
+                        android:textColor="@color/base_50"
+                        android:textSize="16dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="49dp"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="18dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:id="@+id/btn_tts"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/layout_background_base_0_border"
+                            android:gravity="center"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/pretendard_semibold"
-                                android:text="👂"
-                                android:textColor="@color/base_100"
-                                android:textSize="22dp" />
-
-                            <TextView
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="5dp"
-                                android:fontFamily="@font/pretendard_semibold"
-                                android:text="듣기"
-                                android:textColor="@color/base_70"
-                                android:textSize="14dp" />
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/pretendard_semibold"
+                                    android:text="👂"
+                                    android:textColor="@color/base_100"
+                                    android:textSize="22dp" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="5dp"
+                                    android:fontFamily="@font/pretendard_semibold"
+                                    android:text="듣기"
+                                    android:textColor="@color/base_70"
+                                    android:textSize="14dp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btn_stt"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/layout_background_base_0_border"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/pretendard_semibold"
+                                    android:text="🎙️"
+                                    android:textColor="@color/base_100"
+                                    android:textSize="22dp" />
+
+                                <TextView
+                                    android:id="@+id/txt_stt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="5dp"
+                                    android:fontFamily="@font/pretendard_semibold"
+                                    android:text="@string/status_stt_off"
+                                    android:textColor="@color/base_70"
+                                    android:textSize="14dp" />
+                            </LinearLayout>
+
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/btn_stt"
+                        android:id="@+id/ly_words"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="6dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/layout_background_base_0_border"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginRight="18dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/layout_background_base_0_8"
+                        android:orientation="vertical"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingBottom="16dp">
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/pretendard_regular"
+                            android:paddingTop="12dp"
+                            android:paddingBottom="12dp"
+                            android:text="단어장"
+                            android:textColor="@color/base_60"
+                            android:textSize="12dp" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/pretendard_semibold"
-                                android:text="🎙️"
-                                android:textColor="@color/base_100"
-                                android:textSize="22dp" />
-
-                            <TextView
-                                android:id="@+id/txt_stt"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_marginLeft="5dp"
-                                android:fontFamily="@font/pretendard_semibold"
-                                android:text="@string/status_stt_off"
-                                android:textColor="@color/base_70"
-                                android:textSize="14dp" />
-                        </LinearLayout>
+                        <ListView
+                            android:id="@+id/lst_words"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:divider="@color/claen"
+                            android:dividerHeight="17dp"
+                            android:nestedScrollingEnabled="false" />
 
                     </LinearLayout>
-
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ly_words"
+                    android:id="@+id/ly_confirm"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:layout_marginLeft="18dp"
-                    android:layout_marginTop="12dp"
                     android:layout_marginRight="18dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/layout_background_base_0_8"
-                    android:orientation="vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:paddingBottom="16dp">
+                    android:background="@drawable/layout_background_positive_30"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:fontFamily="@font/pretendard_regular"
-                        android:paddingTop="12dp"
-                        android:paddingBottom="12dp"
-                        android:text="단어장"
-                        android:textColor="@color/base_60"
-                        android:textSize="12dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="14dp"
+                        android:orientation="horizontal">
 
-                    <ListView
-                        android:id="@+id/lst_words"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:nestedScrollingEnabled="false"
-                        android:divider="@color/claen"
-                        android:dividerHeight="17dp" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_check" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/pretendard_regular"
+                            android:text="문장이 저장되었습니다"
+                            android:textColor="@color/base_100"
+                            android:textSize="16dp" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_expand_right" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!--<TextView
-                    android:id="@+id/textView18"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:background="@color/base_40"
-                    android:text="TextView" />-->
-            </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
 
