@@ -27,16 +27,67 @@
             app:defaultNavHost="true">
         </fragment>
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_menu"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:labelVisibilityMode="unlabeled"
-            app:itemIconTint="@drawable/selector_menu_bottom"
-            app:itemTextColor="@drawable/selector_menu_bottom"
-            android:background="@color/base_10"
-            app:menu="@menu/menu_bottom">
-        </com.google.android.material.bottomnavigation.BottomNavigationView>
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/fm_bottom54"
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottom_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/base_10"
+                    app:itemIconTint="@drawable/selector_menu_bottom"
+                    app:itemTextColor="@drawable/selector_menu_bottom"
+                    app:labelVisibilityMode="unlabeled"
+                    app:menu="@menu/menu_bottom"></com.google.android.material.bottomnavigation.BottomNavigationView>
+
+                <LinearLayout
+                    android:id="@+id/btn_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/base_10"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_trash" />
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/fm_bottom77"
+                android:layout_width="match_parent"
+                android:layout_height="77dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="49dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="18dp"
+                    android:background="@drawable/layout_background_primary_100_8"
+                    android:fontFamily="@font/pretendard_semibold"
+                    android:text="문장 저장하기"
+                    android:textColor="@color/base_0"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 
     <!--<TextView

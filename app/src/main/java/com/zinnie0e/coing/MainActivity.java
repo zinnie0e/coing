@@ -1,14 +1,14 @@
 package com.zinnie0e.coing;
 
+import static androidx.navigation.fragment.FragmentKt.findNavController;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,24 +18,21 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.zinnie0e.coing.database.InsertDatabase;
 import com.zinnie0e.coing.fragment.HomeFragment;
-import com.zinnie0e.coing.fragment.NoteBookFragment;
+import com.zinnie0e.coing.fragment.StorageFragment;
 import com.zinnie0e.coing.fragment.RecommendFragment;
 import com.zinnie0e.coing.fragment.SaveFragment;
 import com.zinnie0e.coing.util.ActivityResultEvent;
@@ -50,12 +47,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnVoice;
     ListView listView;
     View main_host_frag;
+    public LinearLayout btn_bottom;
+    public BottomNavigationView bottom_menu;
+    public FrameLayout fm_bottom54;
+    public LinearLayout fm_bottom77;
 
-    private BottomNavigationView bottom_menu;
     FragmentManager fm;
     FragmentTransaction ft;
     private HomeFragment home_frag;
-    private NoteBookFragment notebook_frag;
+    private StorageFragment notebook_frag;
     private SaveFragment save_frag;
     private RecommendFragment recommend_frag;
 
@@ -98,8 +98,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void findId() {
         /*txtVoice = (TextView)findViewById(R.id.txtVoice);
         btnVoice = (Button) findViewById(R.id.btnVoice);*/
-        listView = (ListView)findViewById(R.id.listConv);
+        listView = (ListView)findViewById(R.id.lst_conv);
         bottom_menu = findViewById(R.id.bottom_menu);
+        btn_bottom = findViewById(R.id.btn_bottom);
+        fm_bottom54 = findViewById(R.id.fm_bottom54);
+        fm_bottom77 = findViewById(R.id.fm_bottom77);
         main_frag = R.id.main_host_frame;
         main_host_frag = findViewById(R.id.main_host_frame);
     }
@@ -126,10 +129,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return true;
             }
         });
-        home_frag = new HomeFragment(this);
-        notebook_frag = new NoteBookFragment();
+        home_frag = new HomeFragment();
+        notebook_frag = new StorageFragment();
         save_frag = new SaveFragment();
-        setFragment(0); // 첫 프래그먼트 화면 지정
     }
 
     public void setFragment(int n) {
